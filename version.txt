@@ -1,0 +1,19 @@
+# llm_run 版本变更记录
+
+## v0.1.0 (初始版本)
+
+- 创建项目框架
+- 实现推理引擎抽象基类 BaseInferenceEngine
+- 实现 OpenAI 兼容 REST API（/v1/chat/completions、/v1/completions、/v1/models）
+- 支持流式 SSE 输出
+
+## v0.1.1 (2025-03-10)
+
+- 推理引擎改用原始 TensorRT 库
+- 移除 tensorrt_llm 依赖，适配 Jetson Thor 等嵌入式环境
+- 支持 tensorrt + pycuda 加载 .engine/.plan 并执行推理
+- 兼容 TensorRT 8.x 与 10.x API
+- 使用 transformers AutoTokenizer 进行编码/解码
+- 实现自回归生成循环（tokenize → infer → sample → append → repeat）
+- 支持 temperature、top_k、top_p 采样参数
+- 更新 requirements.txt、pyproject.toml、README.md

@@ -1,10 +1,12 @@
 # llm_run
 
-基于 TensorRT 的 LLM 推理引擎，提供 OpenAI 兼容的 REST API 服务。
+基于原始 TensorRT 的 LLM 推理引擎，提供 OpenAI 兼容的 REST API 服务。
+**适用于 Jetson Thor 等嵌入式环境**，不依赖 tensorrt_llm。
 
 ## 功能特性
 
-- **TensorRT 推理引擎**：加载预编译的 LLM TensorRT engine 并执行推理
+- **原始 TensorRT 推理**：使用 tensorrt + pycuda 加载 .engine/.plan 并执行推理
+- **Jetson 友好**：仅依赖 JetPack 自带的 tensorrt，适配嵌入式部署
 - **OpenAI 兼容 API**：支持 `/v1/chat/completions`、`/v1/completions`、`/v1/models` 等接口
 - **流式输出**：支持 SSE 流式返回
 - **多模型参数**：temperature、top_p、top_k、stop 等
@@ -44,8 +46,9 @@ source venv/bin/activate  # Linux/Mac
 # 安装依赖
 pip install -e .
 
-# TensorRT-LLM（需从 NVIDIA 获取对应 CUDA 版本的 wheel）
-# pip install tensorrt_llm  # 或从 NVIDIA 官方渠道安装
+# Jetson 上：tensorrt、pycuda 通常随 JetPack 预装
+# x86 开发机可额外安装：
+# pip install tensorrt pycuda
 ```
 
 ## 使用
@@ -53,16 +56,18 @@ pip install -e .
 ### 启动服务
 
 ```bash
-# 指定 engine 路径启动
-llm-run --engine-path /path/to/your/engine
+# 指定 engine 和 tokenizer 路径（tokenizer 用于编码/解码）
+llm-run --engine-path /path/to/your/engine.plan --tokenizer-path /path/to/tokenizer
 
-# 完整参数
+# tokenizer-path 可为 HuggingFace 模型名或本地路径
 llm-run \
-  --engine-path /path/to/engine \
-  --tokenizer-path /path/to/tokenizer \
+  --engine-path ./engines/model.plan \
+  --tokenizer-path Qwen/Qwen2-0.5B-Instruct \
   --host 0.0.0.0 \
   --port 8000
 ```
+
+**Engine 格式说明**：需为单步推理 engine，输入 `input_ids` [batch, seq_len]，输出 `logits` [batch, seq, vocab] 或 [batch, vocab]。若 binding 名称不同，可在代码中通过 `input_name`/`output_name` 指定。
 
 ### API 调用示例
 

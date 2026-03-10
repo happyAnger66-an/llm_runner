@@ -6,5 +6,8 @@ uvicorn[standard]>=0.22.0
 pydantic>=2.0
 pydantic-settings>=2.0
 
-# TensorRT-LLM（需从 NVIDIA 或官方渠道安装，此处仅作占位说明）
-# tensorrt_llm  # pip install tensorrt_llm 或从 NVIDIA 获取 wheel
+# 推理引擎（Jetson 嵌入式环境）
+numpy>=1.20.0
+transformers>=4.30.0   # tokenizer
+# tensorrt  # Jetson 上随 JetPack 预装，x86 可 pip install tensorrt
+# pycuda    # pip install pycuda
