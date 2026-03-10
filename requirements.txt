@@ -1,0 +1,10 @@
+# Web 框架
+fastapi>=0.100.0
+uvicorn[standard]>=0.22.0
+
+# 数据校验与配置
+pydantic>=2.0
+pydantic-settings>=2.0
+
+# TensorRT-LLM（需从 NVIDIA 或官方渠道安装，此处仅作占位说明）
+# tensorrt_llm  # pip install tensorrt_llm 或从 NVIDIA 获取 wheel
